@@ -1,0 +1,37 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          { "type": "command", "command": ".claude/hooks/bash-guard.sh" }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [
+          { "type": "command", "command": "ruff format $CLAUDE_FILE_PATHS 2>/dev/null; ruff check --fix $CLAUDE_FILE_PATHS 2>/dev/null; true" }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "echo \"<git_context>branch: $(git branch --show-current 2>/dev/null); last: $(git log -1 --oneline 2>/dev/null)</git_context>\"" }
+        ]
+      }
+    ]
+  },
+  "_mcpServers_template": {
+    "_description": "Uncomment and configure to add MCP servers. See https://telegramorder-bot.pages.dev/blog/claude-code-mcp-server-tutorial.html",
+    "devtools": {
+      "command": "python",
+      "args": ["/absolute/path/to/devtools_mcp.py"],
+      "env": {
+        "DEVTOOLS_REPO_ROOT": "/absolute/path/to/your/repo"
+      }
+    }
+  }
+}
